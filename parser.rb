@@ -26,6 +26,7 @@ class Item
 		page_url = "http://www.homedepot.com/s/#{input}?NCNI-5&Nao=0"
 		page = Nokogiri::HTML(open(page_url))
 		index = 0
+		img_src = ""
 		description = ""
 		model_number = ""
 		price = ""
@@ -35,6 +36,14 @@ class Item
 			price = page.css('span.item_price')[index].text
 			add_item([description, model_number, price])
 			index += 1
+			img_src = page.css('div.product-image img.stretchy')[index]['src']
+			description = page.css('a.item_description')[index].text
+			model_number = page.css('p.model_container')[index].text
+			price = page.css('span.item_price')[index].text
+			add_item([img_src, description, model_number, price])
+			index += 1
+			binding.pry
+
 			end
 		end
 	end

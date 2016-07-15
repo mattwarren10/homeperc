@@ -5,9 +5,7 @@ require 'pry'
 require "yaml"
 
 class Item
-	attr_writer :descriptions, :model_numbers, :prices
-
-	def initialize 
+	def initialize
 		@items = []
 	end
 
@@ -25,29 +23,29 @@ class Item
 		input = gets.chomp
 		page_url = "http://www.homedepot.com/s/#{input}?NCNI-5&Nao=0"
 		page = Nokogiri::HTML(open(page_url))
-		index = 0
 		img_src = ""
 		description = ""
 		model_number = ""
 		price = ""
+		index = 0
 		while index < 25 do
-			description = page.css('a.item_description')[index].text
+			img_src = page.css('div.product-image img.stretchy')[index]['src'].strip
+			description = page.css('a.item_description')[index].text.strip
 			model_number = page.css('p.model_container')[index].text
-			price = page.css('span.item_price')[index].text
-			add_item([description, model_number, price])
-			index += 1
-			img_src = page.css('div.product-image img.stretchy')[index]['src']
-			description = page.css('a.item_description')[index].text
-			model_number = page.css('p.model_container')[index].text
-			price = page.css('span.item_price')[index].text
+			price = page.css('span.item_price')[index].text.strip
 			add_item([img_src, description, model_number, price])
 			index += 1
 			binding.pry
-
 			end
 		end
+	end
+
+	def list_items
+		puts @items
 	end
 
 
 oven = Item.new
 oven.get_items
+oven.list_items
+oven.save
